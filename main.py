@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def is_url_responsive(url):
+def create_soup(url):
     """Vérifie si une page de site web peut être consultée. Si tel est
     le cas, la page web est parsée.
     Arg:
@@ -20,7 +20,7 @@ def is_url_responsive(url):
 
 
 def get_title(soup):
-    """Trouve le titre (h1) d'un objet BeautifulSoup parsée.
+    """Trouve le titre (h1) d'un objet BeautifulSoup parsé.
     Arg:
         soup = un objet BeautifulSoup obtenu à l'aide de la fonction
         "is_url_responsive()"
@@ -34,7 +34,7 @@ def get_title(soup):
 
 
 def get_category(soup):
-    """Trouve la catégorie d'ouvrage d'un objet BeautifulSoup parsée.
+    """Trouve la catégorie d'ouvrage d'un objet BeautifulSoup parsé.
     Arg:
         soup = un objet BeautifulSoup obtenu à l'aide de la fonction
         "is_url_responsive()"
@@ -49,7 +49,7 @@ def get_category(soup):
 
 
 def get_description(soup):
-    """Trouve la description d'un ouvrage (h2) d'un objet BeautifulSoup parsée.
+    """Trouve la description d'un ouvrage (h2) d'un objet BeautifulSoup parsé.
     Arg:
         soup = un objet BeautifulSoup obtenu à l'aide de la fonction
         "is_url_responsive()"
@@ -64,7 +64,7 @@ def get_description(soup):
 
 
 def get_image_url(soup):
-    """Trouve l'url de l'image d'un ouvrage d'un objet BeautifulSoup parsée.
+    """Trouve l'url de l'image d'un ouvrage d'un objet BeautifulSoup parsé.
     Arg:
         soup = un objet BeautifulSoup obtenu à l'aide de la fonction
         "is_url_responsive()"
@@ -79,7 +79,7 @@ def get_image_url(soup):
 
 
 def get_table_data(soup):
-    """Récupère le tableau de données d'un ouvrage à partir d'un objet BeautifulSoup parsée.
+    """Récupère le tableau de données d'un ouvrage à partir d'un objet BeautifulSoup parsé.
     Puis, stocke les informations récoltées dans une liste intitulée 'data'
     Arg:
         soup = un objet BeautifulSoup obtenu à l'aide de la fonction
@@ -167,7 +167,7 @@ def get_review_rating(data):
 
 def main():
     url = 'http://books.toscrape.com/catalogue/feathers-displays-of-brilliant-plumage_695/index.html'
-    soup = is_url_responsive(url)
+    soup = create_soup(url)
     title = get_title(soup)
     category = get_category(soup)
     description = get_description(soup)
