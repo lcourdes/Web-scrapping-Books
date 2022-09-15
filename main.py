@@ -194,6 +194,31 @@ def add_book_to_csv(product_page_url, book):
         ])
 
 
+def find_books_in_category(url_mystery):
+    """Trouve tous les livres d'une catégorie et inscris leurs noms et leurs urls
+    dans un dictionnaire.
+
+        Arg:
+            url_mystery = adresse url d'une catégorie
+
+        Returns:
+            books : Un dictionnaire qui a pour clefs les titres des ouvrages de la catégorie
+            sélectionnée et pour valeurs les urls des ouvrages correspondants.
+    """
+
+    soup = create_soup(url_mystery)
+    books = {}
+    all_h3_in_category_page = soup.find_all('h3')
+
+    for h3 in all_h3_in_category_page:
+        a_balise = h3.find("a")
+        title = a_balise['title']
+        link = "http://books.toscrape.com/catalogue/" + a_balise['href'].replace('../', '')
+        books[title] = link
+
+    return books
+
+
 def main():
     url = 'http://books.toscrape.com/catalogue/feathers-displays-of-brilliant-plumage_695/index.html'
     soup = create_soup(url)
