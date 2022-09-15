@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import csv
 
 
 def create_soup(url):
@@ -146,10 +147,35 @@ class Book:
         return review_rating
 
 
+def create_csv_file():
+    """Crée un fichier csv dont les noms de colonnes correspondent aux informations des ouvrages.
+
+        Returns:
+            csvfile = un fichier csv
+        """
+
+    with open('test.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            'Product_page_url',
+            'universal_product_code',
+            'title',
+            'price_including_tax',
+            'price_excluding_tax',
+            'number_available',
+            'product_description',
+            'category',
+            'review_rating',
+            'image_url',
+        ])
+    return csvfile
+
+
 def main():
     url = 'http://books.toscrape.com/catalogue/feathers-displays-of-brilliant-plumage_695/index.html'
     soup = create_soup(url)
     book = Book(soup)
+    create_csv_file()
 
 
 main()
