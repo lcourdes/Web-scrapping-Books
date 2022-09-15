@@ -236,11 +236,10 @@ def iterate_in_books(books):
 
 
 def main():
-    url = 'http://books.toscrape.com/catalogue/feathers-displays-of-brilliant-plumage_695/index.html'
-    soup = create_soup(url)
-    book = Book(soup)
+    url_mystery = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
     create_csv_file()
-    add_book_to_csv(url, book)
+    books = find_books_in_category(url_mystery)
+    iterate_in_books(books)
 
 
 main()
