@@ -171,11 +171,35 @@ def create_csv_file():
     return csvfile
 
 
+def add_book_to_csv(product_page_url, book):
+    """Ajoute un ouvrage dans un fichier csv.
+
+        Arg:
+            book = instance de la classe Book
+    """
+
+    with open('test.csv', 'a', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([
+            product_page_url,
+            book.get_universal_product_code(),
+            book.get_title(),
+            book.get_price_including_tax(),
+            book.get_price_excluding_tax(),
+            book.get_number_available(),
+            book.get_description(),
+            book.get_category(),
+            book.get_review_rating(),
+            book.get_image_url(),
+        ])
+
+
 def main():
     url = 'http://books.toscrape.com/catalogue/feathers-displays-of-brilliant-plumage_695/index.html'
     soup = create_soup(url)
     book = Book(soup)
     create_csv_file()
+    add_book_to_csv(url, book)
 
 
 main()
