@@ -195,7 +195,7 @@ def add_book_to_csv(product_page_url, book):
 
 
 def find_books_in_category(url_mystery):
-    """Trouve tous les livres d'une catégorie et inscris leurs noms et leurs urls
+    """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
     dans un dictionnaire.
 
         Arg:
@@ -217,6 +217,22 @@ def find_books_in_category(url_mystery):
         books[title] = link
 
     return books
+
+
+def iterate_in_books(books):
+    """Pour chaque url d'ouvrages (valeur du dictionnaire books), cette fonction :
+        - crée un objet soup à l'aide de la fonction 'create_soup'
+        - crée une instance de la classe 'Book'
+        - ajoute les informations de l'instance de Book dans le fichier csv
+
+        Arg:
+            books = dictionnaire obtenu à la l'aide de la fonction 'find books in category'
+    """
+
+    for value in books.values():
+        soup = create_soup(value)
+        book = Book(soup)
+        add_book_to_csv(value, book)
 
 
 def main():
