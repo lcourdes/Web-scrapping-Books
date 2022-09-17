@@ -3,21 +3,17 @@ from bs4 import BeautifulSoup
 import csv
 
 
-def create_soup(url):
-    """Vérifie si une page de site web peut être consultée. Si tel est
-    le cas, la page web est parsée.
+def check_url(url):
+    """Vérifie si une page de site web peut être consultée.
     Arg:
         url (str): Adresse URL
 
     Returns:
-        soup: un objet BeautifulSoup
+        bool
     """
 
     response = requests.get(url)
-    soup = ""
-    if response.ok:
-        soup = BeautifulSoup(response.text, 'html.parser')
-    return soup
+    return response.ok
 
 
 class Book:
@@ -194,27 +190,50 @@ def add_book_to_csv(product_page_url, book):
         ])
 
 
-def find_books_in_category(url_mystery):
+def check_pages(url_category):
+    """Trouve tous les url d'une catégorie et les inscrit dans une liste.
+
+        Arg:
+            url_category = adresse url de l'index d'une catégorie
+
+        Returns:
+            all_url_pages : Une liste de tous les url d'une catégorie.
+    """
+    all_url_pages = []
+    number_of_page = 2
+    while check_url(url_category):
+        all_url_pages.append(url_category)
+        if number_of_page == 2:
+            url_category = url_category.replace('index.html', 'page-' + str(number_of_page) + '.html')
+        else:
+            url_category = url_category.replace('page-' + str(number_of_page - 1), 'page-' + str(number_of_page))
+        number_of_page += 1
+    return all_url_pages
+
+
+def find_books_in_category(all_url_pages):
     """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
     dans un dictionnaire.
 
         Arg:
-            url_mystery = adresse url d'une catégorie
+            all_url_pages = liste obtenue à l'aide de la fonction 'check_pages'
 
         Returns:
             books : Un dictionnaire qui a pour clefs les titres des ouvrages de la catégorie
             sélectionnée et pour valeurs les urls des ouvrages correspondants.
     """
 
-    soup = create_soup(url_mystery)
     books = {}
-    all_h3_in_category_page = soup.find_all('h3')
+    for url in all_url_pages:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        all_h3_in_category_page = soup.find_all('h3')
 
-    for h3 in all_h3_in_category_page:
-        a_balise = h3.find("a")
-        title = a_balise['title']
-        link = "http://books.toscrape.com/catalogue/" + a_balise['href'].replace('../', '')
-        books[title] = link
+        for h3 in all_h3_in_category_page:
+            a_balise = h3.find("a")
+            title = a_balise['title']
+            link = "http://books.toscrape.com/catalogue/" + a_balise['href'].replace('../', '')
+            books[title] = link
 
     return books
 
@@ -229,16 +248,18 @@ def iterate_in_books(books):
             books = dictionnaire obtenu à la l'aide de la fonction 'find books in category'
     """
 
-    for value in books.values():
-        soup = create_soup(value)
+    for url in books.values():
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
         book = Book(soup)
-        add_book_to_csv(value, book)
+        add_book_to_csv(url, book)
 
 
 def main():
-    url_mystery = 'http://books.toscrape.com/catalogue/category/books/mystery_3/index.html'
+    url_mystery = 'http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html'
     create_csv_file()
-    books = find_books_in_category(url_mystery)
+    all_url_pages = check_pages(url_mystery)
+    books = find_books_in_category(all_url_pages)
     iterate_in_books(books)
 
 
