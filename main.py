@@ -54,11 +54,7 @@ class Category:
         self.find_books_in_category()
 
     def check_pages(self):
-        """Trouve tous les url d'une catégorie et les inscrit dans une liste.
-
-        Returns:
-                all_url_pages : Une liste de tous les url d'une catégorie.
-        """
+        """Trouve tous les url d'une catégorie et les inscrit dans une liste."""
 
         number_of_page = 2
         while check_url(self.url_category):
@@ -70,10 +66,9 @@ class Category:
                                                     'page-' + str(number_of_page - 1),
                                                     'page-' + str(number_of_page))
             number_of_page += 1
-        return self.all_url_pages
 
     def find_books_in_category(self):
-        """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
+        """Trouve tous les livres d'une catégorie et inscrit leurs urls
             dans une liste.
 
         Returns:
