@@ -70,9 +70,6 @@ class Book:
     def get_table_data(self):
         """Récupère le tableau de données d'un ouvrage, puis, stocke les informations
         récoltées dans une liste intitulée 'data'.
-
-        Returns:
-            data = une liste des informations contenues dans le tableau de données de l'ouvrage
         """
 
         table_data = self.soup.findAll('td')
@@ -81,8 +78,6 @@ class Book:
 
     def get_universal_product_code(self):
         """Récupère le code de produit d'un ouvrage
-        Arg:
-            data = une liste obtenue à l'aide de la méthode 'get_table_data()'
 
         Returns:
             universal_product_code = une string spécifiant le code de produit d'un ouvrage
@@ -93,8 +88,6 @@ class Book:
 
     def get_price_including_tax(self):
         """Récupère le prix (taxes incluses) d'un ouvrage
-        Arg:
-            data = une liste obtenue à l'aide de la méthode 'get_table_data()'
 
         Returns:
             price_including_tax = une string spécifiant le prix (TTC) d'un ouvrage
@@ -106,8 +99,6 @@ class Book:
 
     def get_price_excluding_tax(self):
         """Récupère le prix (taxes non incluses) d'un ouvrage
-        Arg:
-            data = une liste obtenue à l'aide de la méthode 'get_table_data()'
 
         Returns:
             price_excluding_tax = une string spécifiant le prix (HT) d'un ouvrage
@@ -119,8 +110,6 @@ class Book:
 
     def get_number_available(self):
         """Récupère le nombre d'ouvrages encore disponible
-        Arg:
-            data = une liste obtenue à l'aide de la méthode 'get_table_data()'
 
         Returns:
             number_available = une string spécifiant le nombre d'ouvrages encore disponibles
@@ -132,8 +121,6 @@ class Book:
 
     def get_review_rating(self):
         """Récupère la note des utilisateurs d'un ouvrage
-        Arg:
-            data = une liste obtenue à l'aide de la méthode 'get_table_data()'
 
         Returns:
             review_rating = une string spécifiant la note utilisateur d'un ouvrage
