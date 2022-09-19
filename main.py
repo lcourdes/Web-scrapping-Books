@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+from pathlib2 import Path
 
 
 def check_url(url):
@@ -257,8 +258,13 @@ def write_to_csv(list_for_csv, category_name):
         list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
         category_name : nom de la catégorie
     """
+
+    path = Path('data/' + category_name)
+
+    if not path.exists():
+        path.mkdir(parents=True)
     file_name = category_name + ".csv"
-    with open(file_name, 'w', newline='') as csvfile:
+    with open(path/file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(list_for_csv)
 
