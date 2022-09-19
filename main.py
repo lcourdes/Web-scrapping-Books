@@ -109,17 +109,6 @@ class Book:
         title = str(self.soup.find('h1').text)
         return title
 
-    def get_category(self):
-        """Trouve la catégorie d'un ouvrage.
-
-        Returns:
-            category = une string spécifiant la catégorie d'ouvrage
-        """
-
-        category_brut = self.soup.select("#default > div.container-fluid.page > div > ul > li:nth-child(3) > a")
-        category = category_brut[0].text.strip()
-        return category
-
     def get_description(self):
         """Trouve la description d'un ouvrage (h2).
 
