@@ -16,6 +16,54 @@ def check_url(url):
     return response.ok
 
 
+class Category:
+    """Une catégorie"""
+
+    def __init__(self, url_category):
+        self.url_category = url_category
+        self.all_url_pages = []
+        self.books = []
+        self.check_pages()
+        self.find_books_in_category()
+
+    def check_pages(self):
+        """Trouve tous les url d'une catégorie et les inscrit dans une liste.
+
+            Returns:
+                all_url_pages : Une liste de tous les url d'une catégorie.
+        """
+
+        number_of_page = 2
+        while check_url(self.url_category):
+            self.all_url_pages.append(self.url_category)
+            if number_of_page == 2:
+                self.url_category = self.url_category.replace('index.html', 'page-' + str(number_of_page) + '.html')
+            else:
+                self.url_category = self.url_category.replace(
+                                                    'page-' + str(number_of_page - 1),
+                                                    'page-' + str(number_of_page))
+            number_of_page += 1
+        return self.all_url_pages
+
+    def find_books_in_category(self):
+        """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
+        dans une liste.
+
+            Returns:
+                books : Une liste des urls de tous les ouvrages de la catégorie.
+        """
+
+        for url in self.all_url_pages:
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            all_h3_in_category_page = soup.find_all('h3')
+
+            for h3 in all_h3_in_category_page:
+                a_balise = h3.find("a")
+                link = "http://books.toscrape.com/catalogue/" + a_balise['href'].replace('../', '')
+                self.books.append(link)
+
+
 class Book:
     """Un ouvrage"""
 
@@ -130,42 +178,38 @@ class Book:
         return review_rating
 
 
-def create_csv_file():
-    """Crée un fichier csv dont les noms de colonnes correspondent aux informations des ouvrages.
-
-        Returns:
-            csvfile = un fichier csv
-        """
-
-    with open('test.csv', 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([
-            'Product_page_url',
-            'universal_product_code',
-            'title',
-            'price_including_tax',
-            'price_excluding_tax',
-            'number_available',
-            'product_description',
-            'category',
-            'review_rating',
-            'image_url',
-        ])
-    return csvfile
-
-
-def add_book_to_csv(product_page_url, book):
-    """Ajoute un ouvrage dans un fichier csv.
+def iterate_in_books(books):
+    """Pour chaque url d'ouvrages, cette fonction :
+        - crée une instance de la classe 'Book'
+        - ajoute les informations de l'instance de Book dans une liste
 
         Arg:
-            product_page_url = adresse url d'un ouvrage
-            book = instance de la classe Book
+            books = liste obtenue par l'instance d'une catégorie
+
+        Returns:
+            list_for_csv = Une liste contenant les en-têtes ainsi que les informations propres à chaque ouvrage
+            à écrire dans un fichier csv.
     """
 
-    with open('test.csv', 'a', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([
-            product_page_url,
+    list_for_csv = [[
+        'Product_page_url',
+        'universal_product_code',
+        'title',
+        'price_including_tax',
+        'price_excluding_tax',
+        'number_available',
+        'product_description',
+        'category',
+        'review_rating',
+        'image_url',
+    ]]
+
+    for url in books:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        book = Book(soup)
+        list_for_csv.append([
+            url,
             book.get_universal_product_code(),
             book.get_title(),
             book.get_price_including_tax(),
@@ -177,78 +221,27 @@ def add_book_to_csv(product_page_url, book):
             book.get_image_url(),
         ])
 
-
-def check_pages(url_category):
-    """Trouve tous les url d'une catégorie et les inscrit dans une liste.
-
-        Arg:
-            url_category = adresse url de l'index d'une catégorie
-
-        Returns:
-            all_url_pages : Une liste de tous les url d'une catégorie.
-    """
-    all_url_pages = []
-    number_of_page = 2
-    while check_url(url_category):
-        all_url_pages.append(url_category)
-        if number_of_page == 2:
-            url_category = url_category.replace('index.html', 'page-' + str(number_of_page) + '.html')
-        else:
-            url_category = url_category.replace('page-' + str(number_of_page - 1), 'page-' + str(number_of_page))
-        number_of_page += 1
-    return all_url_pages
+    return list_for_csv
 
 
-def find_books_in_category(all_url_pages):
-    """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
-    dans un dictionnaire.
+def write_to_csv(list_for_csv):
+    """Ajoute un ouvrage dans un fichier csv.
 
         Arg:
-            all_url_pages = liste obtenue à l'aide de la fonction 'check_pages'
-
-        Returns:
-            books : Un dictionnaire qui a pour clefs les titres des ouvrages de la catégorie
-            sélectionnée et pour valeurs les urls des ouvrages correspondants.
+            list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
     """
 
-    books = {}
-    for url in all_url_pages:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        all_h3_in_category_page = soup.find_all('h3')
-
-        for h3 in all_h3_in_category_page:
-            a_balise = h3.find("a")
-            title = a_balise['title']
-            link = "http://books.toscrape.com/catalogue/" + a_balise['href'].replace('../', '')
-            books[title] = link
-
-    return books
-
-
-def iterate_in_books(books):
-    """Pour chaque url d'ouvrages (valeur du dictionnaire books), cette fonction :
-        - crée un objet soup à l'aide de la fonction 'create_soup'
-        - crée une instance de la classe 'Book'
-        - ajoute les informations de l'instance de Book dans le fichier csv
-
-        Arg:
-            books = dictionnaire obtenu à la l'aide de la fonction 'find books in category'
-    """
-
-    for url in books.values():
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        book = Book(soup)
-        add_book_to_csv(url, book)
+    with open('test.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerows(list_for_csv)
 
 
 def main():
     url_mystery = 'http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html'
-    create_csv_file()
-    all_url_pages = check_pages(url_mystery)
-    books = find_books_in_category(all_url_pages)
-    iterate_in_books(books)
+    category = Category(url_mystery)
+    books = category.books
+    list_for_csv = iterate_in_books(books)
+    write_to_csv(list_for_csv)
 
 
 main()
