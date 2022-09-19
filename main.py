@@ -158,6 +158,7 @@ def add_book_to_csv(product_page_url, book):
     """Ajoute un ouvrage dans un fichier csv.
 
         Arg:
+            product_page_url = adresse url d'un ouvrage
             book = instance de la classe Book
     """
 
