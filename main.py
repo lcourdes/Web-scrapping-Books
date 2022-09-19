@@ -117,8 +117,11 @@ class Book:
         """
 
         description_brut = self.soup.find('h2')
-        description = description_brut.findNext("p").get_text()
-        return description
+        if str(description_brut.text) == "Product Description":
+            description = description_brut.findNext("p").get_text()
+            return description
+        else:
+            return None
 
     def get_image_url(self):
         """Trouve l'url de l'image d'un ouvrage
