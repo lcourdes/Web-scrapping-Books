@@ -6,7 +6,7 @@ import csv
 def check_url(url):
     """Vérifie si une page de site web peut être consultée.
     Arg:
-        url (str): Adresse URL
+        url (str): Adresse Url
 
     Returns:
         bool
@@ -29,7 +29,7 @@ class Category:
     def check_pages(self):
         """Trouve tous les url d'une catégorie et les inscrit dans une liste.
 
-            Returns:
+        Returns:
                 all_url_pages : Une liste de tous les url d'une catégorie.
         """
 
@@ -47,9 +47,9 @@ class Category:
 
     def find_books_in_category(self):
         """Trouve tous les livres d'une catégorie et inscrit leurs noms et leurs urls
-        dans une liste.
+            dans une liste.
 
-            Returns:
+        Returns:
                 books : Une liste des urls de tous les ouvrages de la catégorie.
         """
 
@@ -94,7 +94,7 @@ class Book:
         return category
 
     def get_description(self):
-        """Trouve la description d'un ouvrage (h2)
+        """Trouve la description d'un ouvrage (h2).
 
         Returns:
             description = une string de la description d'un ouvrage
@@ -117,7 +117,7 @@ class Book:
 
     def get_table_data(self):
         """Récupère le tableau de données d'un ouvrage, puis, stocke les informations
-        récoltées dans une liste intitulée 'data'.
+            récoltées dans une liste intitulée 'data'.
         """
 
         table_data = self.soup.findAll('td')
@@ -125,7 +125,7 @@ class Book:
             self.data.append(cell.text)
 
     def get_universal_product_code(self):
-        """Récupère le code de produit d'un ouvrage
+        """Récupère le code de produit d'un ouvrage.
 
         Returns:
             universal_product_code = une string spécifiant le code de produit d'un ouvrage
@@ -135,7 +135,7 @@ class Book:
         return universal_product_code
 
     def get_price_including_tax(self):
-        """Récupère le prix (taxes incluses) d'un ouvrage
+        """Récupère le prix (taxes incluses) d'un ouvrage.
 
         Returns:
             price_including_tax = une string spécifiant le prix (TTC) d'un ouvrage
@@ -146,7 +146,7 @@ class Book:
         return price_including_tax
 
     def get_price_excluding_tax(self):
-        """Récupère le prix (taxes non incluses) d'un ouvrage
+        """Récupère le prix (taxes non incluses) d'un ouvrage.
 
         Returns:
             price_excluding_tax = une string spécifiant le prix (HT) d'un ouvrage
@@ -157,7 +157,7 @@ class Book:
         return price_excluding_tax
 
     def get_number_available(self):
-        """Récupère le nombre d'ouvrages encore disponible
+        """Récupère le nombre d'ouvrages encore disponible.
 
         Returns:
             number_available = une string spécifiant le nombre d'ouvrages encore disponibles
@@ -168,7 +168,7 @@ class Book:
         return number_available
 
     def get_review_rating(self):
-        """Récupère la note des utilisateurs d'un ouvrage
+        """Récupère la note des utilisateurs d'un ouvrage.
 
         Returns:
             review_rating = une string spécifiant la note utilisateur d'un ouvrage
@@ -181,7 +181,7 @@ class Book:
 def iterate_in_books(books):
     """Pour chaque url d'ouvrages, cette fonction :
         - crée une instance de la classe 'Book'
-        - ajoute les informations de l'instance de Book dans une liste
+        - ajoute les informations de l'instance de Book dans une liste.
 
         Arg:
             books = liste obtenue par l'instance d'une catégorie
@@ -225,10 +225,10 @@ def iterate_in_books(books):
 
 
 def write_to_csv(list_for_csv):
-    """Ajoute un ouvrage dans un fichier csv.
+    """Ecrit la list_for_csv dans un fichier csv.
 
-        Arg:
-            list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
+    Arg:
+        list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
     """
 
     with open('test.csv', 'w', newline='') as csvfile:
