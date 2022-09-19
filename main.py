@@ -16,6 +16,32 @@ def check_url(url):
     return response.ok
 
 
+def find_all_url_category(url):
+    """Trouve tous les noms et adresses url des catégories d'ouvrages.
+
+    Arg:
+        url (str): Adresse Url du site 'Books to scrape'
+
+    Returns:
+        all_url_category (dict) = Les clés sont les noms des catégories d'ouvrages, les valeurs sont les adresses url
+            des index des ouvrages respectifs.
+    """
+
+    if check_url(url):
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        nav_list_ul = soup.find("ul", class_="nav nav-list")
+        a_in_ul_nav = nav_list_ul.find_all("a")
+
+        all_url_category = {}
+        for a in a_in_ul_nav:
+            name_of_category = a.text.strip()
+            link = "http://books.toscrape.com/catalogue/category/" + a['href'].replace('../', '')
+            all_url_category[name_of_category] = link
+        del all_url_category['Books']
+        return all_url_category
+
+
 class Category:
     """Une catégorie"""
 
@@ -178,7 +204,7 @@ class Book:
         return review_rating
 
 
-def iterate_in_books(books):
+def iterate_in_books(books, category_name):
     """Pour chaque url d'ouvrages, cette fonction :
         - crée une instance de la classe 'Book'
         - ajoute les informations de l'instance de Book dans une liste.
@@ -216,7 +242,7 @@ def iterate_in_books(books):
             book.get_price_excluding_tax(),
             book.get_number_available(),
             book.get_description(),
-            book.get_category(),
+            category_name,
             book.get_review_rating(),
             book.get_image_url(),
         ])
@@ -224,24 +250,27 @@ def iterate_in_books(books):
     return list_for_csv
 
 
-def write_to_csv(list_for_csv):
-    """Ecrit la list_for_csv dans un fichier csv.
+def write_to_csv(list_for_csv, category_name):
+    """Ecrit la list_for_csv dans un fichier csv portant le nom de sa catégorie d'ouvrages.
 
     Arg:
         list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
+        category_name : nom de la catégorie
     """
-
-    with open('test.csv', 'w', newline='') as csvfile:
+    file_name = category_name + ".csv"
+    with open(file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(list_for_csv)
 
 
 def main():
-    url_mystery = 'http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html'
-    category = Category(url_mystery)
-    books = category.books
-    list_for_csv = iterate_in_books(books)
-    write_to_csv(list_for_csv)
+    home_url = 'http://books.toscrape.com/catalogue/category/books_1/index.html'
+    all_url_category = find_all_url_category(home_url)
+    for category_name, category_url in all_url_category.items():
+        category = Category(category_url)
+        books = category.books
+        list_for_csv = iterate_in_books(books, category_name)
+        write_to_csv(list_for_csv, category_name)
 
 
 main()
