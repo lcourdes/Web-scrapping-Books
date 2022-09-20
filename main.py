@@ -255,7 +255,6 @@ def download_image(book, category_name):
             path.mkdir(parents=True)
 
         file_name = book.get_title().replace('/', ' ') + ".png"
-        print(file_name)
         with open(path/file_name, 'wb+') as imagefile:
             imagefile.write(response)
 
