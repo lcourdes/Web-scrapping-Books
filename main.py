@@ -234,8 +234,30 @@ def iterate_in_books(books, category_name):
             book.get_review_rating(),
             book.get_image_url(),
         ])
+        download_image(book, category_name)
 
     return list_for_csv
+
+
+def download_image(book, category_name):
+    """Télécharge l'image de chaque ouvrage
+
+    Arg:
+        book : instance de Book
+        category_name (str) : nom de la catégorie de l'ouvrage
+    """
+
+    if check_url(book.get_image_url()):
+        response = requests.get(book.get_image_url()).content
+        path = Path('data/' + category_name)
+
+        if not path.exists():
+            path.mkdir(parents=True)
+
+        file_name = book.get_title().replace('/', ' ') + ".png"
+        print(file_name)
+        with open(path/file_name, 'wb+') as imagefile:
+            imagefile.write(response)
 
 
 def write_to_csv(list_for_csv, category_name):
@@ -247,10 +269,7 @@ def write_to_csv(list_for_csv, category_name):
     """
 
     path = Path('data/' + category_name)
-
-    if not path.exists():
-        path.mkdir(parents=True)
-    file_name = category_name + ".csv"
+    file_name = str(category_name) + ".csv"
     with open(path/file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(list_for_csv)
