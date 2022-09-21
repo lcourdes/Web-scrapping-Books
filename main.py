@@ -2,19 +2,23 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 from pathlib2 import Path
+from MyExceptions import *
 
 
-def check_url(url):
-    """Vérifie si une page de site web peut être consultée.
+def create_soup(url):
+    """Crée un objet soup à partir d'une adresse url.
     Arg:
         url (str): Adresse Url
 
     Returns:
-        bool
+        soup = objet soup de l'adresse Url
     """
 
     response = requests.get(url)
-    return response.ok
+    if response.ok is False:
+        raise InvalidUrlAddress
+    soup = BeautifulSoup(response.text, 'html.parser')
+    return soup
 
 
 def find_all_url_category(url):
@@ -28,19 +32,21 @@ def find_all_url_category(url):
             des index des ouvrages respectifs.
     """
 
-    if check_url(url):
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        nav_list_ul = soup.find("ul", class_="nav nav-list")
-        a_in_ul_nav = nav_list_ul.find_all("a")
-
-        all_url_category = {}
-        for a in a_in_ul_nav:
-            name_of_category = a.text.strip()
-            link = "http://books.toscrape.com/catalogue/category/" + a['href'].replace('../', '')
-            all_url_category[name_of_category] = link
-        del all_url_category['Books']
-        return all_url_category
+    soup = ""
+    try:
+        soup = create_soup(url)
+    except InvalidUrlAddress:
+        pass
+    print('ici')
+    nav_list_ul = soup.find("ul", class_="nav nav-list")
+    a_in_ul_nav = nav_list_ul.find_all("a")
+    all_url_category = {}
+    for a in a_in_ul_nav:
+        name_of_category = a.text.strip()
+        link = "http://books.toscrape.com/catalogue/category/" + a['href'].replace('../', '')
+        all_url_category[name_of_category] = link
+    del all_url_category['Books']
+    return all_url_category
 
 
 class Category:
@@ -48,23 +54,27 @@ class Category:
 
     def __init__(self, url_category):
         self.url_category = url_category
-        self.all_url_pages = []
+        self.all_soup_pages = []
         self.books = []
         self.check_pages()
         self.find_books_in_category()
 
     def check_pages(self):
-        """Trouve tous les url d'une catégorie et les inscrit dans une liste."""
+        """Trouve tous les url d'une catégorie, en fait des objets soup et inscrit ces derniers dans une liste."""
 
         number_of_page = 2
-        while check_url(self.url_category):
-            self.all_url_pages.append(self.url_category)
+        while True:
+            try:
+                soup = create_soup(self.url_category)
+            except InvalidUrlAddress:
+                break
+            self.all_soup_pages.append(soup)
             if number_of_page == 2:
                 self.url_category = self.url_category.replace('index.html', 'page-' + str(number_of_page) + '.html')
             else:
                 self.url_category = self.url_category.replace(
-                                                    'page-' + str(number_of_page - 1),
-                                                    'page-' + str(number_of_page))
+                    'page-' + str(number_of_page - 1),
+                    'page-' + str(number_of_page))
             number_of_page += 1
 
     def find_books_in_category(self):
@@ -75,9 +85,7 @@ class Category:
                 books : Une liste des urls de tous les ouvrages de la catégorie.
         """
 
-        for url in self.all_url_pages:
-            response = requests.get(url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+        for soup in self.all_soup_pages:
             all_h3_in_category_page = soup.find_all('h3')
 
             for h3 in all_h3_in_category_page:
@@ -247,16 +255,17 @@ def download_image(book, category_name):
         category_name (str) : nom de la catégorie de l'ouvrage
     """
 
-    if check_url(book.get_image_url()):
-        response = requests.get(book.get_image_url()).content
-        path = Path('data/' + category_name)
+    response = requests.get(book.get_image_url())
+    if response.ok is False:
+        raise InvalidUrlAddress
+    soup = response.content
 
-        if not path.exists():
-            path.mkdir(parents=True)
-
-        file_name = book.get_title().replace('/', ' ') + ".png"
-        with open(path/file_name, 'wb+') as imagefile:
-            imagefile.write(response)
+    path = Path('data/' + category_name)
+    if not path.exists():
+        path.mkdir(parents=True)
+    file_name = book.get_title().replace('/', ' ') + ".png"
+    with open(path/file_name, 'wb+') as imagefile:
+        imagefile.write(soup)
 
 
 def write_to_csv(list_for_csv, category_name):
