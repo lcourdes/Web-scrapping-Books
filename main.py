@@ -35,6 +35,15 @@ def find_all_category(url):
 
 
 def choose_category(all_category):
+    """Permet à l'utilisateur de choisir la catégorie pour laquelle il souhaite extraire les données.
+
+    Arg:
+        all_category : Liste obtenue à l'aide de la fonction 'find_all_category'.
+
+    Returns:
+        int(choosen_category) : id de la catégorie choisie.
+
+    """
     for i in range(len(all_category)):
         print(str(i) + ": " + all_category[i][0])
     print("\n\n Entrez le numéro de la catégorie choisie.")
