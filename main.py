@@ -4,7 +4,7 @@ import csv
 from pathlib2 import Path
 from MyExceptions import *
 from Models import Book, Category
-from Utile import create_soup
+from Utiles import create_soup
 
 
 def find_all_category(url):
@@ -93,7 +93,7 @@ def iterate_in_books(books, category_name):
     ]]
 
     for url in books:
-        response = requests.get(url)
+        response = requests.get(url)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         soup = BeautifulSoup(response.text, 'html.parser')
         book = Book(soup)
         list_for_csv.append([
