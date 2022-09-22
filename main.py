@@ -93,8 +93,11 @@ def iterate_in_books(books, category_name):
     ]]
 
     for url in books:
-        response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = ""
+        try:
+            soup = create_soup(url)
+        except InvalidUrlAddress:
+            pass
         book = Book(soup)
         list_for_csv.append([
             url,
