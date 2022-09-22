@@ -93,7 +93,7 @@ def iterate_in_books(books, category_name):
     ]]
 
     for url in books:
-        response = requests.get(url)#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         book = Book(soup)
         list_for_csv.append([
@@ -149,6 +149,28 @@ def write_to_csv(list_for_csv, category_name):
         writer.writerows(list_for_csv)
 
 
+def full_process_category(all_category, choosen_category_id):
+    """Cette fonction permet de :
+        - instancier la catégorie choisie
+        - faire une liste d'ouvrages pour cette catégorie
+        - Récupérer les informations de chacun de ces ouvrages
+        - Ecrire ces informations dans un fichier csv
+
+    Arg:
+        all_category: Liste obtenue à l'aide de la fonction 'find_all_category'.
+        choosen_category_id: indice de la catégorie choisie grâce à la fonction 'choose_category'
+    """
+
+    print("Extraction en cours de la catégorie : " +
+          all_category[choosen_category_id][0] +
+          ".  Veuillez attendre..."
+          )
+    category = Category(all_category[choosen_category_id][1])
+    books = category.books
+    list_for_csv = iterate_in_books(books, all_category[choosen_category_id][0])
+    write_to_csv(list_for_csv, all_category[choosen_category_id][0])
+
+
 def main():
     home_url = 'http://books.toscrape.com/catalogue/category/books_1/index.html'
     all_category = find_all_category(home_url)
@@ -157,28 +179,14 @@ def main():
         choosen_category_id = choose_category(all_category)
         if choosen_category_id == 0:
             for choosen_category_id in range(1, 51):
-                print("Extraction en cours de la catégorie : " +
-                      all_category[choosen_category_id][0] +
-                      ".  Veuillez attendre..."
-                      )
-                category = Category(all_category[choosen_category_id][1])
-                books = category.books
-                list_for_csv = iterate_in_books(books, all_category[choosen_category_id][0])
-                write_to_csv(list_for_csv, all_category[choosen_category_id][0])
+                full_process_category(all_category, choosen_category_id)
             break
         else:
-            print("Extraction en cours de la catégorie : " +
-                  all_category[choosen_category_id][0] +
-                  ".  Veuillez attendre..."
-                  )
-            category = Category(all_category[choosen_category_id][1])
-            books = category.books
-            list_for_csv = iterate_in_books(books, all_category[choosen_category_id][0])
-            write_to_csv(list_for_csv, all_category[choosen_category_id][0])
+            full_process_category(all_category, choosen_category_id)
         print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
         print("(Entrez 'oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
         want_to_continue = input()
-        if want_to_continue != 'oui':
+        if want_to_continue.lower() != 'oui':
             break
     print("Extraction terminée.")
 
