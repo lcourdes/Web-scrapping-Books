@@ -44,8 +44,9 @@ def choose_category(all_category):
         int(choosen_category) : id de la catégorie choisie.
 
     """
-    for i in range(len(all_category)):
-        print(str(i) + ": " + all_category[i][0])
+
+    for category_id, category_informations in enumerate(all_category):
+        print(str(category_id) + ": " + category_informations[0])
     print("\n\n Entrez le numéro de la catégorie choisie.")
     print("(Entrez 0 pour récupérer les données de toutes les catégories.)")
 
