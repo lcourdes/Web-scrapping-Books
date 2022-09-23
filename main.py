@@ -1,6 +1,7 @@
 import requests
 import csv
 from pathlib2 import Path
+import re
 from myexceptions import *
 from models import Book, Category
 from utils import create_soup
@@ -109,12 +110,12 @@ def iterate_in_books(books, category_name, category_id):
             book.get_review_rating(),
             book.get_image_url(),
         ])
-        download_image(book, category_name, category_id)
+        download_image(book, category_name, category_id, url)
 
     return list_for_csv
 
 
-def download_image(book, category_name, category_id):
+def download_image(book, category_name, category_id, url_product):
     """Télécharge l'image de chaque ouvrage
 
     Arg:
@@ -132,8 +133,11 @@ def download_image(book, category_name, category_id):
         path.mkdir(parents=True)
     file_name = book.get_title().replace('/', '_') + ".png"
     file_name = file_name.replace(' ', '_')
-    file_name = str(category_id) + "_" + file_name
     file_name = file_name.lower()
+    find_id_book = re.search("_(\d*)/index", url_product)
+    id_book = find_id_book.group(1)
+    file_name = str(id_book) + "_" + file_name
+
     with open(path / file_name, 'wb+') as imagefile:
         imagefile.write(soup)
 
