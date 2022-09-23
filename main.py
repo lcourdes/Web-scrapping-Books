@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 import csv
 from pathlib2 import Path
 from MyExceptions import *
@@ -18,11 +17,10 @@ def find_all_category(url):
             à savoir : ["nom de la catégorie", "Url de la catégorie"]
     """
 
-    soup = ""
     try:
         soup = create_soup(url)
     except InvalidUrlAddress:
-        pass
+        raise
     nav_list_ul = soup.find("ul", class_="nav nav-list")
     a_in_ul_nav = nav_list_ul.find_all("a")
     all_category = []
@@ -67,7 +65,7 @@ def choose_category(all_category):
     return int(choosen_category)
 
 
-def iterate_in_books(books, category_name):
+def iterate_in_books(books, category_name, category_id):
     """Pour chaque url d'ouvrages, cette fonction :
         - crée une instance de la classe 'Book'
         - ajoute les informations de l'instance de Book dans une liste.
@@ -94,11 +92,10 @@ def iterate_in_books(books, category_name):
     ]]
 
     for url in books:
-        soup = ""
         try:
             soup = create_soup(url)
         except InvalidUrlAddress:
-            pass
+            raise
         book = Book(soup)
         list_for_csv.append([
             url,
@@ -112,12 +109,12 @@ def iterate_in_books(books, category_name):
             book.get_review_rating(),
             book.get_image_url(),
         ])
-        download_image(book, category_name)
+        download_image(book, category_name, category_id)
 
     return list_for_csv
 
 
-def download_image(book, category_name):
+def download_image(book, category_name, category_id):
     """Télécharge l'image de chaque ouvrage
 
     Arg:
@@ -130,15 +127,18 @@ def download_image(book, category_name):
         raise InvalidUrlAddress
     soup = response.content
 
-    path = Path('data/' + category_name)
+    path = Path('data/' + str(category_id) + "_" + category_name)
     if not path.exists():
         path.mkdir(parents=True)
-    file_name = book.get_title().replace('/', ' ') + ".png"
+    file_name = book.get_title().replace('/', '_') + ".png"
+    file_name = file_name.replace(' ', '_')
+    file_name = str(category_id) + "_" + file_name
+    file_name = file_name.lower()
     with open(path / file_name, 'wb+') as imagefile:
         imagefile.write(soup)
 
 
-def write_to_csv(list_for_csv, category_name):
+def write_to_csv(list_for_csv, category_name, category_id):
     """Ecrit la list_for_csv dans un fichier csv portant le nom de sa catégorie d'ouvrages.
 
     Arg:
@@ -146,8 +146,8 @@ def write_to_csv(list_for_csv, category_name):
         category_name : nom de la catégorie
     """
 
-    path = Path('data/' + category_name)
-    file_name = str(category_name) + ".csv"
+    path = Path('data/' + str(category_id) + "_" + category_name)
+    file_name = str(category_id) + "_" + str(category_name) + ".csv"
     with open(path / file_name, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerows(list_for_csv)
@@ -171,28 +171,36 @@ def full_process_category(all_category, choosen_category_id):
           )
     category = Category(all_category[choosen_category_id][1])
     books = category.books
-    list_for_csv = iterate_in_books(books, all_category[choosen_category_id][0])
-    write_to_csv(list_for_csv, all_category[choosen_category_id][0])
+    try:
+        list_for_csv = iterate_in_books(books, all_category[choosen_category_id][0], choosen_category_id)
+        write_to_csv(list_for_csv, all_category[choosen_category_id][0], choosen_category_id)
+    except InvalidUrlAddress:
+        raise
 
 
 def main():
     home_url = 'http://books.toscrape.com/catalogue/category/books_1/index.html'
-    all_category = find_all_category(home_url)
-
-    while True:
-        choosen_category_id = choose_category(all_category)
-        if choosen_category_id == 0:
-            for choosen_category_id in range(1, 51):
+    try:
+        all_category = find_all_category(home_url)
+        while True:
+            choosen_category_id = choose_category(all_category)
+            if choosen_category_id == 0:
+                for choosen_category_id in range(1, 51):
+                    try:
+                        full_process_category(all_category, choosen_category_id)
+                    except InvalidUrlAddress:
+                        raise
+                break
+            else:
                 full_process_category(all_category, choosen_category_id)
-            break
-        else:
-            full_process_category(all_category, choosen_category_id)
-        print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
-        print("(Entrez 'oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
-        want_to_continue = input()
-        if want_to_continue.lower() != 'oui':
-            break
-    print("Extraction terminée.")
+            print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
+            print("(Entrez 'Oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
+            want_to_continue = input()
+            if want_to_continue.lower() != 'oui':
+                break
+        print("Extraction terminée.")
+    except InvalidUrlAddress:
+        print("L'adresse Url n'est pas valide.")
 
 
 main()
