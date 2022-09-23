@@ -1,5 +1,5 @@
-from MyExceptions import InvalidUrlAddress
-from Utiles import create_soup
+from myexceptions import InvalidUrlAddress
+from utils import create_soup
 
 
 class Book:

@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from MyExceptions import InvalidUrlAddress
+from myexceptions import InvalidUrlAddress
 
 
 def create_soup(url):

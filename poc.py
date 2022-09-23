@@ -1,5 +1,5 @@
-from Models import Book
-from Utiles import create_soup
+from models import Book
+from utils import create_soup
 
 url = "http://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html"
 

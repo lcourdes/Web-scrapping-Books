@@ -1,9 +1,9 @@
 import requests
 import csv
 from pathlib2 import Path
-from MyExceptions import *
-from Models import Book, Category
-from Utiles import create_soup
+from myexceptions import *
+from models import Book, Category
+from utils import create_soup
 
 
 def find_all_category(url):
