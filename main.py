@@ -41,7 +41,6 @@ def choose_category(all_category):
 
     Returns:
         int(choosen_category) : id de la catégorie choisie.
-
     """
 
     for category_id, category_informations in enumerate(all_category):
@@ -73,6 +72,8 @@ def iterate_in_books(books, category_name, category_id):
 
         Arg:
             books = liste obtenue par l'instance d'une catégorie
+            category_name (str) = nom de la catégorie choisie
+            category_id (int) = numéro de la catégorie choisie
 
         Returns:
             list_for_csv = Une liste contenant les en-têtes ainsi que les informations propres à chaque ouvrage
@@ -121,6 +122,8 @@ def download_image(book, category_name, category_id, url_product):
     Arg:
         book : instance de Book
         category_name (str) : nom de la catégorie de l'ouvrage
+        category_id (int) = numéro de la catégorie de l'ouvrage
+        url_product (str) = adresse url de l'ouvrage
     """
 
     response = requests.get(book.get_image_url())
@@ -147,7 +150,8 @@ def write_to_csv(list_for_csv, category_name, category_id):
 
     Arg:
         list_for_csv : liste obtenue à l'aide de la fonction 'iterate_in_books'
-        category_name : nom de la catégorie
+        category_name (str) = nom de la catégorie
+        category_id (int) = numéro de la catégorie
     """
 
     path = Path('data/' + str(category_id) + "_" + category_name)
@@ -166,7 +170,7 @@ def full_process_category(all_category, choosen_category_id):
 
     Arg:
         all_category: Liste obtenue à l'aide de la fonction 'find_all_category'.
-        choosen_category_id: indice de la catégorie choisie grâce à la fonction 'choose_category'
+        choosen_category_id (int): indice de la catégorie choisie grâce à la fonction 'choose_category'
     """
 
     print("Extraction en cours de la catégorie : " +
