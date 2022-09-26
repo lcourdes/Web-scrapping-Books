@@ -202,7 +202,7 @@ def main():
             else:
                 try:
                     full_process_category(all_category, choosen_category_id)
-                except
+                except InvalidUrlAddress:
                     raise
             print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
             print("(Entrez 'Oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
