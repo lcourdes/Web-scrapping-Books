@@ -61,12 +61,11 @@ peut prendre beaucoup de temps.
 ![console](impression_ecran_readme/console_etape_1.png)
 
 - Une fois les informations extraites il est possible :
-  - de renouveler l'opération en inscrivant le mot 'Oui'.
-
-![console](impression_ecran_readme/console_etape_2.png)
-
+  - de renouveler l'opération en inscrivant le mot 'Oui' (cf. image ci-dessous).
   - de fermer le programme en inscrivant tout autre chose dans la console \(la touche *Entrée* suffit également à 
 elle seule).
+
+![console](impression_ecran_readme/console_etape_2.png)
 
 ## Retrouver les données extraites
 - Un dossier intitulé *data* est créé dans le répertoire courant. 
