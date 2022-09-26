@@ -1,3 +1,12 @@
+"""
+Ce Proof Of Concept permet de récupérer et de printer des informations relatives à un ouvrage du site
+http://books.toscrape.com
+
+Les informations recueillies relatives à chaque ouvrage sont : 1) l'adresse url, 2) le code produit universel (upc),
+3) le titre, 4) le prix toutes taxes comprises, 5) le prix hors taxes, 6) nombre d'unités disponibles, 7) description du
+produit, 8) la catégorie, 9) la note utilisateur, 10) l'adresse url de l'image.
+"""
+
 from models import Book
 from utils import create_soup
 
