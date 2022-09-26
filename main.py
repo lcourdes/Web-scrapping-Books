@@ -200,7 +200,10 @@ def main():
                         raise
                 break
             else:
-                full_process_category(all_category, choosen_category_id)
+                try:
+                    full_process_category(all_category, choosen_category_id)
+                except
+                    raise
             print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
             print("(Entrez 'Oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
             want_to_continue = input()
