@@ -186,7 +186,7 @@ def full_process_category(all_category, choosen_category_id):
         raise
 
 
-def main():
+if __name__ == '__main__':
     home_url = 'http://books.toscrape.com/catalogue/category/books_1/index.html'
     try:
         all_category = find_all_category(home_url)
@@ -212,6 +212,3 @@ def main():
         print("Extraction terminée.")
     except InvalidUrlAddress:
         print("L'adresse Url n'est pas valide.")
-
-
-main()
