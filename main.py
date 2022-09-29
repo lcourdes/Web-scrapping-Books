@@ -6,23 +6,23 @@ if __name__ == '__main__':
     try:
         all_category = find_all_category(home_url)
         while True:
-            choosen_category_id = choose_category(all_category)
-            if choosen_category_id == 0:
-                for choosen_category_id in range(1, 51):
+            chosen_category_id = choose_category(all_category)
+            if chosen_category_id == 0:
+                for chosen_category_id in range(1, 51):
                     try:
-                        full_process_category(all_category, choosen_category_id)
+                        full_process_category(all_category, chosen_category_id)
                     except InvalidUrlAddress:
                         raise
                 break
             else:
                 try:
-                    full_process_category(all_category, choosen_category_id)
+                    full_process_category(all_category, chosen_category_id)
                 except InvalidUrlAddress:
                     raise
             print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
             print("(Entrez 'O' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
             want_to_continue = input()
-            if want_to_continue.lower() != 'oui':
+            if want_to_continue.lower() != 'o':
                 break
         print("Extraction terminée.")
     except InvalidUrlAddress:
