@@ -25,7 +25,7 @@ Concernant le rendu des données, pour chaque catégorie, est créé :
 
 
 ## Procédure d'installation
-Il est recommandé d'installer un environnement virtuel tel que *virtualenv*. Pour ce faire, suivez les instructions 
+Il est recommandé d'installer un environnement virtuel. Pour ce faire, suivez les instructions 
 ci-dessous :
 
 - S'il ne l'est pas déjà, installez le package *virtualenv* :
@@ -61,7 +61,7 @@ peut prendre beaucoup de temps.
 ![console](impression_ecran_readme/console_etape_1.png)
 
 - Une fois les informations extraites il est possible :
-  - de renouveler l'opération en inscrivant le mot 'Oui' (cf. image ci-dessous).
+  - de renouveler l'opération en inscrivant 'O' (cf. image ci-dessous).
   - de fermer le programme en inscrivant tout autre chose dans la console \(la touche *Entrée* suffit également à 
 elle seule).
 
