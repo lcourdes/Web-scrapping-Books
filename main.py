@@ -20,7 +20,7 @@ if __name__ == '__main__':
                 except InvalidUrlAddress:
                     raise
             print("Extraction terminée.\n\nSouhaitez-vous choisir une autre catégorie ?")
-            print("(Entrez 'Oui' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
+            print("(Entrez 'O' si vous voulez continuer. Toute autre entrée terminera le programme.)\n")
             want_to_continue = input()
             if want_to_continue.lower() != 'oui':
                 break
