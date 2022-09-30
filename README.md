@@ -77,3 +77,6 @@ De plus, sont également stockées les images de couverture de chaque ouvrage.
 
 - Les noms des fichiers images suivent la convention suivante : id d'ouvrage unique présent dans l'url de la page 
 produit suivi du titre de l'ouvrage.
+
+# Lien Github
+[https://github.com/lcourdes/Web-scrapping-Books](https://github.com/lcourdes/Web-scrapping-Books)
