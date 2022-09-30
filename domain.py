@@ -49,20 +49,23 @@ def choose_category(all_category):
     print("(Entrez 0 pour récupérer les données de toutes les catégories.)")
 
     while True:
-        choosen_category = input()
-        if not choosen_category.isdigit():
-            print("Entrez un chiffre.")
-        elif int(choosen_category) > 50:
-            print("Entrez un chiffre entre 0 et 50.")
+        chosen_category = input()
+        check_category = re.fullmatch("-?[0-9]?[0-9]", chosen_category)
+        if check_category:
+            chosen_category = int(check_category.group(0))
+            if (chosen_category > 50) or (chosen_category < 0):
+                print("Catégorie non trouvée. Réessayez s'il vous plaît.")
+            else:
+                break
         else:
-            break
+            print("Entrez un chiffre s'il vous plaît.")
     print("\n-> Vous avez choisi la catégorie : " +
-          choosen_category +
+          str(chosen_category) +
           "-" +
-          all_category[int(choosen_category)][0] +
+          all_category[int(chosen_category)][0] +
           ".\n"
           )
-    return int(choosen_category)
+    return chosen_category
 
 
 def iterate_in_books(books, category_name, category_id):
